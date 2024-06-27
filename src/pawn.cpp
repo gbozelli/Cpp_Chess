@@ -1,4 +1,4 @@
-#include <pawn.hpp>
+#include <include\pawn.hpp>
 
 bool Pawn::movIsValid(int x, int y){
   if(y==this->position_y+1 && 
@@ -22,4 +22,18 @@ bool Pawn::atkIsValid(int x, int y){
       it++;
     } 
   }
+  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
+    if(x==*it && y==*(it++)){
+      return true;
+    } else {
+      it++;
+    }
+  }
+  return false;
 };
+
+Pawn::Pawn(int x, int y) {
+  this->position_x = x;
+  this->position_y = y;
+  this->name = 'p';
+}
