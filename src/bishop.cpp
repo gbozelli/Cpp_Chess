@@ -1,4 +1,4 @@
-#include "include\bishop.hpp"
+#include "bishop.hpp"
 
 bool Bishop::movIsValid(int x, int y){
   list<int> moves{};
@@ -7,16 +7,16 @@ bool Bishop::movIsValid(int x, int y){
   this->lim();
   int delta = this->lim_sup_r_x - this->lim_inf_l_x;
   for(int i = 0; i < delta; i++){
-    if(gameBoard[lim_inf_l_x+i][lim_inf_l_y+i]==NULL){
+    if(gameBoard[lim_inf_l_x+i][lim_inf_l_y+i]=='0'){
       moves.insert(it, lim_inf_l_x+i);
       it++;
       moves.insert(it, lim_inf_l_y+i);
       it++;
     } 
   }
-  int delta = this->lim_sup_l_x - this->lim_inf_r_x;
+  delta = this->lim_sup_l_x - this->lim_inf_r_x;
   for(int i = 0; i < delta; i++){
-    if(gameBoard[lim_sup_l_x-i][lim_sup_l_y-i]==NULL){
+    if(gameBoard[lim_sup_l_x-i][lim_sup_l_y-i]=='0'){
       moves.insert(it, lim_sup_l_x-i);
       it++;
       moves.insert(it, lim_sup_l_y-i);
@@ -25,6 +25,9 @@ bool Bishop::movIsValid(int x, int y){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
+      this->position_x = x;
+      this->position_y = y;
+      gameBoard[x][y] = this->name;
       return true;
     } else {
       it++;
@@ -46,6 +49,9 @@ bool Bishop::atkIsValid(int x, int y){
   moves.insert(it, this->lim_inf_l_x);it++;moves.insert(it, lim_inf_l_y);it++;
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
+      this->position_x = x;
+      this->position_y = y;
+      gameBoard[x][y] = this->name;
       return true;
     } else {
       it++;
@@ -57,7 +63,7 @@ bool Bishop::atkIsValid(int x, int y){
 void Bishop::lim() {
   for (int i = this->position_x; i < 7; i++){
     int j = this->position_x - i + this->position_y;
-    if(gameBoard[i][j]!=NULL){
+    if(gameBoard[i][j]!='0'){
       this->lim_sup_r_x = i;
       this->lim_sup_r_y = j;
       break;
@@ -65,7 +71,7 @@ void Bishop::lim() {
   }
   for (int i = this->position_x; i > 0; i--){
     int j = this->position_x - i + this->position_y;
-    if(gameBoard[i][j]!=NULL){
+    if(gameBoard[i][j]!='0'){
       this->lim_sup_r_x = i;
       this->lim_sup_r_y = j;
       break;
@@ -73,7 +79,7 @@ void Bishop::lim() {
   }
   for (int i = this->position_y; i < 7; i++){
     int j = this->position_x - i + this->position_y;
-    if(gameBoard[j][i]!=NULL){
+    if(gameBoard[j][i]!='0'){
       this->lim_sup_r_x = j;
       this->lim_sup_r_y = i;
       break;
@@ -81,7 +87,7 @@ void Bishop::lim() {
   }
   for (int i = this->position_x; i > 0; i--){
     int j = this->position_x - i + this->position_y;
-    if(gameBoard[j][i]!=NULL){
+    if(gameBoard[j][i]!='0'){
       this->lim_sup_r_x = j;
       this->lim_sup_r_y = i;
       break;

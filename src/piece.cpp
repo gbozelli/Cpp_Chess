@@ -1,4 +1,4 @@
-#include "include\piece.hpp"
+#include "piece.hpp"
 
 void Piece::setPosition(int x, int y, bool (*func)(int, int)){
   if(func(x, y)==true) {

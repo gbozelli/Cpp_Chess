@@ -1,8 +1,11 @@
-#include <include\pawn.hpp>
+#include "pawn.hpp"
 
 bool Pawn::movIsValid(int x, int y){
   if(y==this->position_y+1 && 
-    gameBoard[this->position_x][this->position_y+1]==NULL){
+    gameBoard[this->position_x][this->position_y+1]=='0'){
+    this->position_x = x;
+    this->position_y = y;
+    gameBoard[x][y] = this->name;
     return true;
   } else {
     return false;
@@ -15,7 +18,7 @@ bool Pawn::atkIsValid(int x, int y){
   it = moves.begin();
   int j = this->position_y+1;
   for(int i = this->position_x-1; i <= this->position_x+1; i+=2){
-    if(gameBoard[i][j]!=NULL){
+    if(gameBoard[i][j]!='0'){
       moves.insert(it, i);
       it++;
       moves.insert(it, j);
@@ -24,6 +27,9 @@ bool Pawn::atkIsValid(int x, int y){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
+      this->position_x = x;
+      this->position_y = y;
+      gameBoard[x][y] = this->name;
       return true;
     } else {
       it++;

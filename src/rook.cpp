@@ -1,4 +1,4 @@
-#include "include\rook.hpp"
+#include "rook.hpp"
 
 bool Rook::movIsValid(int x, int y){
   list<int> moves{};
@@ -7,7 +7,7 @@ bool Rook::movIsValid(int x, int y){
   this->lim();
   int j = this->position_y+1;
   for(int i = this->lim_inf_x+1; i <= this->lim_sup_x-1; i++){
-    if(gameBoard[i][this->position_y]==NULL){
+    if(gameBoard[i][this->position_y]=='0'){
       moves.insert(it, i);
       it++;
       moves.insert(it, this->position_y);
@@ -15,7 +15,7 @@ bool Rook::movIsValid(int x, int y){
     }
   }
   for(int i = this->lim_inf_y+1; i <= this->lim_sup_y-1; i++){
-    if(gameBoard[this->position_x][i]==NULL){
+    if(gameBoard[this->position_x][i]=='0'){
       moves.insert(it, this->position_x);
       it++;
       moves.insert(it, i);
@@ -25,6 +25,9 @@ bool Rook::movIsValid(int x, int y){
 
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
+      this->position_x = x;
+      this->position_y = y;
+      gameBoard[x][y] = this->name;
       return true;
     } else {
       it++;
@@ -46,6 +49,9 @@ bool Rook::atkIsValid(int x, int y){
   moves.insert(it, i);it++;moves.insert(it, this->lim_inf_y);it++;
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
+      this->position_x = x;
+      this->position_y = y;
+      gameBoard[x][y] = this->name;
       return true;
     } else {
       it++;
@@ -56,25 +62,25 @@ bool Rook::atkIsValid(int x, int y){
 
 void Rook::lim() {
   for (int i = this->position_x; i < 7; i++){
-    if(gameBoard[i][this->position_y]!=NULL){
+    if(gameBoard[i][this->position_y]!='0'){
       this->lim_sup_x = i;
       break;
     }
   }
    for (int i = this->position_x; i > 0; i--){
-    if(gameBoard[i][this->position_y]!=NULL){
+    if(gameBoard[i][this->position_y]!='0'){
       this->lim_inf_x = i;
       break;
     }
   }
    for (int i = this->position_y; i < 7; i++){
-    if(gameBoard[this->position_x][i]!=NULL){
+    if(gameBoard[this->position_x][i]!='0'){
       this->lim_sup_y = i;
       break;
     }
   }
    for (int i = this->position_y; i > 0; i--){
-    if(gameBoard[this->position_x][i]!=NULL){
+    if(gameBoard[this->position_x][i]!='0'){
       this->lim_inf_y = i;
       break;
     }
