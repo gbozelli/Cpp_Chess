@@ -12,6 +12,8 @@ class Piece {
     int type;
 
     void setPosition(int x, int y, bool (*func)(int, int));
+    virtual bool movIsValid(int x, int y, vector<vector<Piece*>> board) = 0;
+    virtual bool atkIsValid(int x, int y, vector<vector<Piece*>> board) = 0;
 };
 
 class Rook: public Piece{
@@ -21,8 +23,8 @@ class Rook: public Piece{
     int lim_sup_x;
     int lim_sup_y;
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     void lim(vector<vector<Piece*>> board);
     Rook(int x, int y, int type);
 };
@@ -42,30 +44,30 @@ class Queen: public Piece{
     int lim_inf_l_x;
     int lim_inf_l_y;
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     void lim(vector<vector<Piece*>> board);
     Queen(int x, int y, int type);
 };
 
 class Pawn: public Piece{
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     Pawn(int x, int y, int type);
 };
 
 class Knight: public Piece{
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     Knight(int x, int y, int type);
 };
 
 class King: public Piece{
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     King(int x, int y, int type);
 };
 
@@ -81,49 +83,52 @@ class Bishop: public Piece{
     int lim_inf_l_y;
 
   public:
-    bool movIsValid(int x, int y, vector<vector<Piece*>> board);
-    bool atkIsValid(int x, int y, vector<vector<Piece*>> board);
+    bool movIsValid(int x, int y, vector<vector<Piece*>> board) override;
+    bool atkIsValid(int x, int y, vector<vector<Piece*>> board) override;
     void lim(vector<vector<Piece*>> board);
     Bishop(int x, int y, int type);
 };
 
 class Board {
-    vector<vector<Piece*>> board; // Tablero de juego
-
 public:
+    vector<vector<Piece*>> board; // Tablero de juego
     // Constructor
-    Board();
+    Board(int a, int b);
 };
 
-Board::Board() {
+Board::Board(int a, int b) {
     // Inicializar el tablero con un tamaño estándar de 8x8
     board.resize(8, vector<Piece*>(8, nullptr));
 
     // Inicializar las piezas blancas
-    board[0][0] = new Rook(0,0,0);
-    board[0][1] = new Knight(0,1,0);
-    board[0][2] = new Bishop(0,2,0);
-    board[0][3] = new Queen(0,3,0);
-    board[0][4] = new King(0,4,0);
-    board[0][5] = new Bishop(0,5,0);
-    board[0][6] = new Knight(0,6,0);
-    board[0][7] = new Rook(0,7,0);
+    board[0][0] = new Rook(0,0,a);
+    board[0][1] = new Knight(0,1,a);
+    board[0][2] = new Bishop(0,2,a);
+    board[0][3] = new Queen(0,3,a);
+    board[0][4] = new King(0,4,a);
+    board[0][5] = new Bishop(0,5,a);
+    board[0][6] = new Knight(0,6,a);
+    board[0][7] = new Rook(0,7,a);
     for (int col = 0; col < 8; col++) {
-        board[1][col] = new Pawn(1,col,0);
+        board[1][col] = new Pawn(1,col,a);
     }
 
     // Inicializar las piezas negras
-    board[7][0] = new Rook(7,0,1);
-    board[7][1] = new Knight(7,1,1);
-    board[7][2] = new Bishop(7,2,1);
-    board[7][3] = new Queen(7,3,1);
-    board[7][4] = new King(7,4,1);
-    board[7][5] = new Bishop(7,5,1);
-    board[7][6] = new Knight(7,6,1);
-    board[7][7] = new Rook(7,7,1);
+    board[7][0] = new Rook(7,0,b);
+    board[7][1] = new Knight(7,1,b);
+    board[7][2] = new Bishop(7,2,b);
+    board[7][3] = new Queen(7,3,b);
+    board[7][4] = new King(7,4,b);
+    board[7][5] = new Bishop(7,5,b);
+    board[7][6] = new Knight(7,6,b);
+    board[7][7] = new Rook(7,7,b);
 
     for (int col = 0; col < 8; col++) {
-        board[6][col] = new Pawn(6,col,1);
+        board[6][col] = new Pawn(6,col,b);
+    }
+    for (int col = 0; col < 8; col++) {
+      for (int row = 2; row < 6; row++)
+        board[row][col] = NULL;
     }
 
 }
@@ -153,6 +158,8 @@ bool Bishop::movIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
+      board[this->position_x][this->position_y] = NULL;
+      board[x][y] = new Bishop(x, y, this->type);
       this->position_x = x;
       this->position_y = y;
       
@@ -177,9 +184,9 @@ bool Bishop::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   moves.insert(it, this->lim_inf_l_x);it++;moves.insert(it, lim_inf_l_y);it++;
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Bishop(x, y, this->type);
       return true;
     } else {
       it++;
@@ -247,9 +254,9 @@ bool King::movIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new King(x, y, this->type);
       return true;
     } else {
       it++;
@@ -275,9 +282,9 @@ bool King::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new King(x, y, this->type);
       return true;
     } else {
       it++;
@@ -310,9 +317,9 @@ bool Knight::movIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Knight(x, y, this->type);
       return true;
     } else {
       it++;
@@ -338,9 +345,9 @@ bool Knight::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Knight(x, y, this->type);
       return true;
     } else {
       it++;
@@ -357,11 +364,21 @@ Knight::Knight(int x, int y, int type) {
 }
 
 bool Pawn::movIsValid(int x, int y, vector<vector<Piece*>> board){
+  cout << 0;
   if(y==this->position_y+1 && 
     board[this->position_x][this->position_y+1]==NULL){
+    board[this->position_x][this->position_y] = NULL;
     this->position_x = x;
     this->position_y = y;
-    
+    board[x][y] = new Pawn(x, y, this->type);
+    for (int i = 0; i < 8; i++){
+    for (int j = 0; j < 8; j++){
+      if(board[i][j]!=NULL)
+        cout << board[i][j]->type;
+      else cout << 0; 
+    }
+    cout << endl;
+  }
     return true;
   } else {
     return false;
@@ -369,6 +386,7 @@ bool Pawn::movIsValid(int x, int y, vector<vector<Piece*>> board){
 };
 
 bool Pawn::atkIsValid(int x, int y, vector<vector<Piece*>> board){
+  cout << 0;
   list<int> moves{};
   std::list<int>::iterator it;
   it = moves.begin();
@@ -383,11 +401,14 @@ bool Pawn::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   }
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
+      board[this->position_x][this->position_y] = NULL;
       this->position_x = x;
       this->position_y = y;
       
+      board[x][y] = new Pawn(x, y, this->type);
       return true;
     } else {
+      it++;
       it++;
     }
   }
@@ -455,9 +476,9 @@ bool Queen::movIsValid(int x, int y, vector<vector<Piece*>> board){
 
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Queen(x, y, this->type);
       return true;
     } else {
       it++;
@@ -484,9 +505,9 @@ bool Queen::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   moves.insert(it, this->lim_inf_l_x);it++;moves.insert(it, lim_inf_l_y);it++;
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Queen(x, y, this->type);
       return true;
     } else {
       it++;
@@ -586,9 +607,9 @@ bool Rook::movIsValid(int x, int y, vector<vector<Piece*>> board){
 
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if(x==*it && y==*(it++)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Rook(x, y, this->type);
       return true;
     } else {
       it++;
@@ -610,9 +631,9 @@ bool Rook::atkIsValid(int x, int y, vector<vector<Piece*>> board){
   moves.insert(it, i);it++;moves.insert(it, this->lim_inf_y);it++;
   for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
     if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
+      board[this->position_x][this->position_y] = NULL;      this->position_x = x;
       this->position_y = y;
-      
+      board[x][y] = new Rook(x, y, this->type);
       return true;
     } else {
       it++;
@@ -658,15 +679,18 @@ Rook::Rook(int x, int y, int type) {
 void printboard(vector<vector<Piece*>> board){
   for (int i = 0; i < 8; i++){
     for (int j = 0; j < 8; j++){
-      cout << board[i][j];
+      if(board[i][j]!=NULL)
+        cout << board[i][j]->type;
+      else cout << 0; 
     }
     cout << endl;
   }
 }
 
 class Player{
-  int type;
+
   public:
+  int type;
   Player(int type);
 };
 
@@ -674,13 +698,21 @@ Player::Player(int type) {
   this->type = type; 
 };
 
-int main(){
-  bool checkMate = false;
-  Board b = Board();
-  Player p1 = Player(0);
-  Player p2 = Player(1);
-  while(checkMate==false){
-    
+void Play(Player p, int x_0, int y_0, int x_1, int y_1, vector<vector<Piece*>> board) {
+  if(board[x_0][y_0]!=NULL){
+    bool b = board[x_0][y_0]->movIsValid(x_1, y_1, board);
   }
+}
+
+int main(){
+  bool checkMate = true;
+  Player p1 = Player(1);
+  Player p2 = Player(2);
+  Board b = Board(p1.type, p2.type);
+  int current_player = 0;
+  cout << 0;
+  Play(p2, 1,0,2,0,b.board);
+  
+
   return 0;
 }
