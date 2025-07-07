@@ -1,9 +1,5 @@
 # CppChess - Jogo de Xadrez em C++ (Terminal)
 
-![GitHub last commit](https://img.shields.io/github/last-commit/SEU_USUARIO_GITHUB/SEU_REPOSITORIO.svg?style=for-the-badge)
-![GitHub top language](https://img.shields.io/github/top-language/SEU_USUARIO_GITHUB/SEU_REPOSITORIO.svg?style=for-the-badge)
-![GitHub license](https://img.shields.io/github/license/SEU_USUARIO_GITHUB/SEU_REPOSITORIO.svg?style=for-the-badge)
-
 ## 🚀 Sobre o Projeto
 
 `CppChess` é um projeto de um jogo de xadrez para terminal desenvolvido em C++. O objetivo é criar uma implementação funcional das regras básicas do xadrez, permitindo que dois jogadores humanos interajam com o tabuleiro e as peças através de comandos no terminal.
