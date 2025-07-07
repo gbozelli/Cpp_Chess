@@ -15,4 +15,4 @@ class Piece {
     void setName(string s);
 };
 
-char gameBoard[8][8] = {'0'};
+char gameBoard[8][8];

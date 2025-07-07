@@ -1,63 +1,35 @@
-#include "knight.hpp"
+#include "../include/knight.hpp"
+#include "../include/board.hpp"
 
-bool Knight::movIsValid(int x, int y){
-  list<int> moves{};
-  std::list<int>::iterator it;
-  it = moves.begin();
-  int j = this->position_y+1;
-  for(int i = this->position_x-1; i <= this->position_x+1; i++){
-    for(int j = this->position_y-1; j <= this->position_y+1; j++){
-      if(gameBoard[i][j]=='0'){
-        moves.insert(it, i);
-        it++;
-        moves.insert(it, j);
-        it++;
-      } 
-    }
-  }
-  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
-    if(x==*it && y==*(it++)){
-      this->position_x = x;
-      this->position_y = y;
-      gameBoard[x][y] = this->name;
-      return true;
-    } else {
-      it++;
-    }
+bool Knight::isValidMove(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
+    return false;
+
+  int dx = abs(newX - position_x);
+  int dy = abs(newY - position_y);
+
+  // Movimento em L: (1,2) ou (2,1)
+  if ((dx == 1 && dy == 2) || (dx == 2 && dy == 1))
+  {
+    Piece *targetPiece = board.getPieceAt(newX, newY);
+    return targetPiece == nullptr; // Válido se a casa estiver vazia
   }
   return false;
-};
+}
 
-bool Knight::atkIsValid(int x, int y){
-  list<int> moves{};
-  std::list<int>::iterator it;
-  it = moves.begin();
-  int j = this->position_y+1;
-  for(int i = this->position_x-1; i <= this->position_x+1; i++){
-    for(int j = this->position_y-1; j <= this->position_y+1; j++){
-      if(gameBoard[i][j]!='0'){
-        moves.insert(it, i);
-        it++;
-        moves.insert(it, j);
-        it++;
-      } 
-    }
-  }
-  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
-    if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
-      this->position_y = y;
-      gameBoard[x][y] = this->name;
-      return true;
-    } else {
-      it++;
-    }
+bool Knight::isValidCapture(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
+    return false;
+
+  int dx = abs(newX - position_x);
+  int dy = abs(newY - position_y);
+
+  if ((dx == 1 && dy == 2) || (dx == 2 && dy == 1))
+  {
+    Piece *targetPiece = board.getPieceAt(newX, newY);
+    return targetPiece != nullptr && targetPiece->isWhite != this->isWhite; // Válido se for peça inimiga
   }
   return false;
-};
-
-Knight::Knight(int x, int y) {
-  this->position_x = x;
-  this->position_y = y;
-  this->name = 'k';
 }

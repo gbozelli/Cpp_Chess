@@ -1,94 +1,70 @@
-#include "rook.hpp"
+#include "../include/rook.hpp"
+#include "../include/board.hpp"
 
-bool Rook::movIsValid(int x, int y){
-  list<int> moves{};
-  std::list<int>::iterator it;
-  it = moves.begin();
-  this->lim();
-  int j = this->position_y+1;
-  for(int i = this->lim_inf_x+1; i <= this->lim_sup_x-1; i++){
-    if(gameBoard[i][this->position_y]=='0'){
-      moves.insert(it, i);
-      it++;
-      moves.insert(it, this->position_y);
-      it++;
-    }
-  }
-  for(int i = this->lim_inf_y+1; i <= this->lim_sup_y-1; i++){
-    if(gameBoard[this->position_x][i]=='0'){
-      moves.insert(it, this->position_x);
-      it++;
-      moves.insert(it, i);
-      it++;
-    }
-  }
+bool Rook::isValidMove(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
+    return false;
 
-  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
-    if(x==*it && y==*(it++)){
-      this->position_x = x;
-      this->position_y = y;
-      gameBoard[x][y] = this->name;
-      return true;
-    } else {
-      it++;
+  // Movimento horizontal ou vertical
+  if (newX == position_x && newY != position_y)
+  { // Vertical
+    int stepY = (newY > position_y) ? 1 : -1;
+    for (int i = position_y + stepY; i != newY; i += stepY)
+    {
+      if (board.getPieceAt(position_x, i) != nullptr)
+      {
+        return false; // Caminho bloqueado
+      }
     }
+    return board.getPieceAt(newX, newY) == nullptr; // Destino vazio
   }
-  return false;
-};
-
-bool Rook::atkIsValid(int x, int y){
-  list<int> moves{};
-  std::list<int>::iterator it;
-  it = moves.begin();
-  int i = this->position_x;
-  int j = this->position_y;
-  this->lim();
-  moves.insert(it, this->lim_sup_x);it++;moves.insert(it, j);it++;
-  moves.insert(it, this->lim_inf_x);it++;moves.insert(it, j);it++;
-  moves.insert(it, i);it++;moves.insert(it, this->lim_sup_y);it++;
-  moves.insert(it, i);it++;moves.insert(it, this->lim_inf_y);it++;
-  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
-    if((x==*it && y==*(it++))&&(x!=this->position_x && y!=this->position_y)){
-      this->position_x = x;
-      this->position_y = y;
-      gameBoard[x][y] = this->name;
-      return true;
-    } else {
-      it++;
+  else if (newY == position_y && newX != position_x)
+  { // Horizontal
+    int stepX = (newX > position_x) ? 1 : -1;
+    for (int i = position_x + stepX; i != newX; i += stepX)
+    {
+      if (board.getPieceAt(i, position_y) != nullptr)
+      {
+        return false; // Caminho bloqueado
+      }
     }
+    return board.getPieceAt(newX, newY) == nullptr; // Destino vazio
   }
-  return false;
-};
-
-void Rook::lim() {
-  for (int i = this->position_x; i < 7; i++){
-    if(gameBoard[i][this->position_y]!='0'){
-      this->lim_sup_x = i;
-      break;
-    }
-  }
-   for (int i = this->position_x; i > 0; i--){
-    if(gameBoard[i][this->position_y]!='0'){
-      this->lim_inf_x = i;
-      break;
-    }
-  }
-   for (int i = this->position_y; i < 7; i++){
-    if(gameBoard[this->position_x][i]!='0'){
-      this->lim_sup_y = i;
-      break;
-    }
-  }
-   for (int i = this->position_y; i > 0; i--){
-    if(gameBoard[this->position_x][i]!='0'){
-      this->lim_inf_y = i;
-      break;
-    }
-  }
+  return false; // Nem horizontal nem vertical
 }
 
-Rook::Rook(int x, int y) {
-  this->position_x = x;
-  this->position_y = y;
-  this->name = 'r';
+bool Rook::isValidCapture(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
+    return false;
+
+  // Ataque horizontal ou vertical
+  if (newX == position_x && newY != position_y)
+  { // Vertical
+    int stepY = (newY > position_y) ? 1 : -1;
+    for (int i = position_y + stepY; i != newY; i += stepY)
+    {
+      if (board.getPieceAt(position_x, i) != nullptr)
+      {
+        return false; // Caminho bloqueado antes de chegar à peça a ser capturada
+      }
+    }
+    Piece *targetPiece = board.getPieceAt(newX, newY);
+    return targetPiece != nullptr && targetPiece->isWhite != this->isWhite; // Destino tem peça inimiga
+  }
+  else if (newY == position_y && newX != position_x)
+  { // Horizontal
+    int stepX = (newX > position_x) ? 1 : -1;
+    for (int i = position_x + stepX; i != newX; i += stepX)
+    {
+      if (board.getPieceAt(i, position_y) != nullptr)
+      {
+        return false; // Caminho bloqueado
+      }
+    }
+    Piece *targetPiece = board.getPieceAt(newX, newY);
+    return targetPiece != nullptr && targetPiece->isWhite != this->isWhite; // Destino tem peça inimiga
+  }
+  return false;
 }

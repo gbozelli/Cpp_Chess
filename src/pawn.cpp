@@ -1,45 +1,49 @@
-#include "pawn.hpp"
+#include "../include/pawn.hpp"
+#include "../include/board.hpp"
 
-bool Pawn::movIsValid(int x, int y){
-  if(y==this->position_y+1 && 
-    gameBoard[this->position_x][this->position_y+1]=='0'){
-    this->position_x = x;
-    this->position_y = y;
-    gameBoard[x][y] = this->name;
-    return true;
-  } else {
+bool Pawn::isValidMove(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
     return false;
-  }
-};
 
-bool Pawn::atkIsValid(int x, int y){
-  list<int> moves{};
-  std::list<int>::iterator it;
-  it = moves.begin();
-  int j = this->position_y+1;
-  for(int i = this->position_x-1; i <= this->position_x+1; i+=2){
-    if(gameBoard[i][j]!='0'){
-      moves.insert(it, i);
-      it++;
-      moves.insert(it, j);
-      it++;
-    } 
+  int forwardDir = isWhite ? 1 : -1; // Peças brancas movem y+, pretas movem y-
+
+  // Movimento de uma casa para frente
+  if (newX == position_x && newY == position_y + forwardDir)
+  {
+    return board.getPieceAt(newX, newY) == nullptr; // Casa de destino deve estar vazia
   }
-  for (list<int>::iterator it=moves.begin(); it != moves.end(); it++){
-    if(x==*it && y==*(it++)){
-      this->position_x = x;
-      this->position_y = y;
-      gameBoard[x][y] = this->name;
-      return true;
-    } else {
-      it++;
-    }
+
+  // Movimento inicial de duas casas
+  if (!hasMoved && newX == position_x && newY == position_y + 2 * forwardDir)
+  {
+    // Casas à frente e no destino devem estar vazias
+    return board.getPieceAt(newX, position_y + forwardDir) == nullptr &&
+           board.getPieceAt(newX, newY) == nullptr;
   }
+
+  // En Passant e promoção são tratados em isValidCapture ou na lógica do jogo principal
   return false;
-};
+}
 
-Pawn::Pawn(int x, int y) {
-  this->position_x = x;
-  this->position_y = y;
-  this->name = 'p';
+bool Pawn::isValidCapture(int newX, int newY, const Board &board)
+{
+  if (newX == position_x && newY == position_y)
+    return false;
+
+  int forwardDir = isWhite ? 1 : -1;
+
+  // Ataque diagonal
+  if (abs(newX - position_x) == 1 && newY == position_y + forwardDir)
+  {
+    Piece *targetPiece = board.getPieceAt(newX, newY);
+    return targetPiece != nullptr && targetPiece->isWhite != this->isWhite; // Deve ser peça inimiga
+  }
+
+  // TODO: Implementar En Passant aqui ou na classe Game.
+  // En Passant seria um caso especial onde a casa de destino está vazia,
+  // mas uma peça inimiga foi capturada na casa adjacente.
+  // Requer que a Board saiba o último movimento de duas casas de um peão.
+
+  return false;
 }
