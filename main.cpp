@@ -1,9 +1,7 @@
-#include "include/game.hpp"
-#include <iostream>
+#include "game.h"
 
-int main()
-{
-  Game chessGame;
-  chessGame.run();
-  return 0;
+int main() {
+    Game game;
+    game.play();
+    return 0;
 }
