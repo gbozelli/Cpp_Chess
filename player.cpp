@@ -25,3 +25,8 @@ void Player::print_pieces() {
     for (auto& p : pieces) std::cout << p.symbol << " ";
     std::cout << "\n";
 }
+
+bool Player::has_king() {
+    for (auto& p : pieces) if (p.type == KING) return true;
+    return false;
+}

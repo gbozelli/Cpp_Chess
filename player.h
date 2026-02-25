@@ -12,6 +12,7 @@ struct Player {
     Player();
     Player(const std::string& name, Color color);
     void print_pieces();
+    bool has_king();
 };
 
 #endif

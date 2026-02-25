@@ -10,6 +10,7 @@ struct Game {
 
     Game();
     void play();
+    void round(Player& player, Player& opponent);
 };
 
 #endif
